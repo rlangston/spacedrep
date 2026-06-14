@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if vocab else "Add" }} Word{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ "Edit" if vocab else "Add" }} Word</h1>
+<form method="post" class="stat-card">
+  <label class="form-label">Source word</label>
+  <input class="form-control mb-3" name="source_word" value="{{ vocab.source_word if vocab else '' }}" required>
+  <label class="form-label">Primary translation</label>
+  <input class="form-control mb-3" name="primary_translation" value="{{ vocab.primary_translation if vocab else '' }}" required>
+  <label class="form-label">Accepted answers</label>
+  <textarea class="form-control mb-3" name="accepted_answers" rows="3" placeholder="Separate with semicolons or new lines">{% if vocab %}{{ vocab.accepted_answers|map(attribute='answer_text')|join('; ') }}{% endif %}</textarea>
+  <label class="form-label">Notes</label>
+  <textarea class="form-control mb-3" name="notes" rows="4">{{ vocab.notes if vocab else '' }}</textarea>
+  <button class="btn btn-primary" type="submit">Save</button>
+  <a class="btn btn-link" href="{{ url_for('main.vocabulary') }}">Cancel</a>
+</form>
+{% endblock %}
+

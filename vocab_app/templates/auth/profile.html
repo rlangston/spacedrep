@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h1 class="h3">Profile</h1>
+<div class="stat-card">
+  <p class="mb-0"><strong>Username:</strong> {{ current_user.username }}</p>
+</div>
+{% endblock %}
+

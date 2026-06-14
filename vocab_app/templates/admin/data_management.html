@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Data Management{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Data Management</h1>
+<div class="alert alert-warning">
+  These actions permanently delete data. Use them when testing, resetting your study account, or replacing the vocabulary list.
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="text-secondary small">Vocabulary words</div><div class="fs-3 fw-semibold">{{ stats.all_words }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="text-secondary small">Inactive words</div><div class="fs-3 fw-semibold">{{ stats.inactive_words }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="text-secondary small">Your progress records</div><div class="fs-3 fw-semibold">{{ stats.user_progress }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="text-secondary small">Your sessions</div><div class="fs-3 fw-semibold">{{ stats.user_sessions }}</div></div></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="stat-card border-warning">
+      <h2 class="h5">Delete Your Learning History</h2>
+      <p>Deletes your quiz sessions and answer records. Vocabulary words and current learning schedules stay intact.</p>
+      <p class="text-secondary">Will delete {{ stats.user_sessions }} sessions and {{ stats.user_answers }} answers.</p>
+      <form method="post">
+        <input type="hidden" name="action" value="delete_history">
+        <label class="form-label">Type DELETE HISTORY to confirm</label>
+        <input class="form-control mb-2" name="confirmation" autocomplete="off">
+        <button class="btn btn-outline-danger">Delete History</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="stat-card border-warning">
+      <h2 class="h5">Reset Your Learning Progress</h2>
+      <p>Removes your active testing set, learning states, review levels, and next review dates. The master vocabulary list stays intact.</p>
+      <p class="text-secondary">Will delete {{ stats.user_progress }} progress records.</p>
+      <form method="post">
+        <input type="hidden" name="action" value="delete_progress">
+        <label class="form-label">Type RESET PROGRESS to confirm</label>
+        <input class="form-control mb-2" name="confirmation" autocomplete="off">
+        <button class="btn btn-outline-danger">Reset Progress</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="stat-card border-danger">
+      <h2 class="h5">Delete Inactive Vocabulary Words</h2>
+      <p>Deletes master vocabulary words that are not active for any user. Related accepted answers, progress records, and answer history for those words are also deleted.</p>
+      <p class="text-secondary">Will delete {{ stats.inactive_words }} vocabulary words.</p>
+      <form method="post">
+        <input type="hidden" name="action" value="delete_inactive_words">
+        <label class="form-label">Type DELETE INACTIVE WORDS to confirm</label>
+        <input class="form-control mb-2" name="confirmation" autocomplete="off">
+        <button class="btn btn-danger">Delete Inactive Words</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="stat-card border-danger">
+      <h2 class="h5">Delete All Vocabulary</h2>
+      <p>Deletes the entire master vocabulary list for everyone, plus all accepted answers, active testing sets, progress, quiz answers, and session history.</p>
+      <p class="text-secondary">Will delete {{ stats.all_words }} words, {{ stats.all_sessions }} sessions, and {{ stats.all_answers }} answers.</p>
+      <form method="post">
+        <input type="hidden" name="action" value="delete_all_words">
+        <label class="form-label">Type DELETE ALL WORDS to confirm</label>
+        <input class="form-control mb-2" name="confirmation" autocomplete="off">
+        <button class="btn btn-danger">Delete All Vocabulary</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Vocabulary{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between gap-2 align-items-center mb-3">
+  <h1 class="h3 mb-0">Vocabulary</h1>
+  <a class="btn btn-primary" href="{{ url_for('main.add_word') }}">Add Word</a>
+</div>
+<form class="row g-2 mb-3">
+  <div class="col-md-6"><input class="form-control" name="q" value="{{ q }}" placeholder="Search source or English"></div>
+  <div class="col-md-4">
+    <select class="form-select" name="filter">
+      {% for key, label in [
+        ("all", "All Words"), ("active", "Active Testing Set"), ("recent", "Recently Added"),
+        ("new", "New"), ("learning", "Learning"), ("graduated", "Graduated"), ("due", "Due Today")
+      ] %}
+      <option value="{{ key }}" {% if filter_name == key %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><button class="btn btn-outline-primary w-100">Search</button></div>
+</form>
+<div class="table-responsive bg-white border rounded">
+  <table class="table table-hover mb-0">
+    <thead><tr><th>Source word</th><th>Primary translation</th><th>Learning state</th><th>Review level</th><th>Next review</th><th>Added to testing</th></tr></thead>
+    <tbody>
+      {% for word in rows %}
+      {% set uw = user_words.get(word.id) %}
+      <tr>
+        <td><a href="{{ url_for('main.word_detail', vocab_id=word.id) }}">{{ word.source_word }}</a></td>
+        <td>{{ word.primary_translation }}</td>
+        <td>{{ uw.display_state if uw and uw.active else "Inactive" }}</td>
+        <td>{{ uw.review_level if uw else "" }}</td>
+        <td>{{ uw.next_review or "" if uw else "" }}</td>
+        <td>{{ uw.date_added_to_testing_set or "" if uw else "" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-secondary">No words found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

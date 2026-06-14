@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Session Detail{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Session Detail</h1>
+<div class="stat-card mb-3">
+  <p><strong>Date:</strong> {{ quiz_session.started_at.strftime("%Y-%m-%d %H:%M") }}</p>
+  <p><strong>Type:</strong> {{ quiz_session.mode|title }}</p>
+  <p><strong>Questions:</strong> {{ quiz_session.answers|length }}</p>
+  <p class="mb-0"><strong>Accuracy:</strong> {{ "%.0f"|format(quiz_session.accuracy) }}%</p>
+</div>
+<div class="table-responsive bg-white border rounded">
+  <table class="table mb-0">
+    <thead><tr><th>Word</th><th>Your answer</th><th>Accepted answers</th><th>Score</th><th>Result</th></tr></thead>
+    <tbody>
+      {% for answer in quiz_session.answers %}
+      <tr>
+        <td><a href="{{ url_for('main.word_detail', vocab_id=answer.vocabulary.id) }}">{{ answer.vocabulary.source_word }}</a></td>
+        <td>{{ answer.user_answer }}</td>
+        <td>{{ answer.vocabulary.all_answers()|join(", ") }}</td>
+        <td>{{ "%.0f"|format(answer.similarity_score or 0) }}</td>
+        <td>{{ "Correct" if answer.correct else "Incorrect" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-secondary">No answers recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

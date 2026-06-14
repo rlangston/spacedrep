@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Advance{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Advance (+10 Words)</h1>
+<div class="stat-card mb-3">
+  <p><strong>Current active word count:</strong> {{ active_count }}</p>
+  <p><strong>Inactive words remaining:</strong> {{ inactive_remaining }}</p>
+  <h2 class="h5">Next words</h2>
+  <ul class="mb-0">
+    {% for word in next_words %}
+    <li>{{ word.source_word }} - {{ word.primary_translation }}</li>
+    {% else %}
+    <li class="text-secondary">No inactive words available.</li>
+    {% endfor %}
+  </ul>
+</div>
+<form method="post">
+  <button class="btn btn-primary" {% if not next_words %}disabled{% endif %}>Confirm</button>
+  <a class="btn btn-link" href="{{ url_for('main.dashboard') }}">Cancel</a>
+</form>
+{% endblock %}
+

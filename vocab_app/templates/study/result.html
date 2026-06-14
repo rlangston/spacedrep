@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Result{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ "Correct" if validation.correct else "Incorrect" }}</h1>
+<div class="stat-card mb-3">
+  <p><strong>Source:</strong> {{ vocab.source_word }}</p>
+  <p><strong>Your answer:</strong> {{ validation.user_answer }}</p>
+  <p><strong>Accepted answers:</strong> {{ vocab.all_answers()|join(", ") }}</p>
+  <p><strong>Similarity score:</strong> {{ "%.0f"|format(validation.similarity_score) }}</p>
+  <p class="answer-mark {{ 'text-success' if validation.correct else 'text-danger' }}">{{ "Correct" if validation.correct else "Incorrect" }}</p>
+</div>
+<div class="d-flex flex-wrap gap-2 mb-3">
+  {% if validation.correct %}
+  <form method="post" action="{{ url_for('main.override_answer_result', answer_id=answer.id, result='incorrect') }}">
+    <button class="btn btn-outline-danger">Mark Incorrect</button>
+  </form>
+  {% else %}
+  <form method="post" action="{{ url_for('main.override_answer_result', answer_id=answer.id, result='correct') }}">
+    <button class="btn btn-outline-success">Mark Correct</button>
+  </form>
+  {% endif %}
+</div>
+{% if remaining %}
+<a class="btn btn-primary" id="primary-next-action" href="{{ url_for('main.quiz_question', session_id=quiz_session.id) }}">Continue</a>
+{% else %}
+<a class="btn btn-primary" id="primary-next-action" href="{{ url_for('main.session_detail', session_id=quiz_session.id) }}">View Session Summary</a>
+{% endif %}
+<script>
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter" || event.defaultPrevented) {
+      return;
+    }
+    if (event.target.closest("button, input, textarea, select, a")) {
+      return;
+    }
+    const nextAction = document.getElementById("primary-next-action");
+    if (nextAction) {
+      event.preventDefault();
+      nextAction.click();
+    }
+  });
+</script>
+{% endblock %}

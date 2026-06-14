@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Session History{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Session History</h1>
+<div class="table-responsive bg-white border rounded">
+  <table class="table mb-0">
+    <thead><tr><th>Date</th><th>Type</th><th>Questions</th><th>Accuracy</th></tr></thead>
+    <tbody>
+      {% for s in sessions %}
+      <tr>
+        <td><a href="{{ url_for('main.session_detail', session_id=s.id) }}">{{ s.started_at.strftime("%Y-%m-%d %H:%M") }}</a></td>
+        <td>{{ s.mode|title }}</td>
+        <td>{{ s.answers|length }}</td>
+        <td>{{ "%.0f"|format(s.accuracy) }}%</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="text-secondary">No sessions yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

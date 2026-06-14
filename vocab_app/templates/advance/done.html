@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Advance Complete{% endblock %}
+{% block content %}
+<h1 class="h3">Words Added</h1>
+<p>New words now participate in the Learning Phase.</p>
+<div class="d-flex flex-wrap gap-2">
+  <a class="btn btn-primary" href="{{ url_for('main.start_session', mode='test') }}">Start Test Session</a>
+  <a class="btn btn-outline-primary" href="{{ url_for('main.start_session', mode='practice') }}">Start Practice Session</a>
+  <a class="btn btn-outline-secondary" href="{{ url_for('main.vocabulary', filter='recent') }}">View Recently Added Words</a>
+</div>
+{% endblock %}
+

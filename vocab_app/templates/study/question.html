@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Question {{ number }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h1 class="h4 mb-0">Question {{ number }} of {{ total }}</h1>
+  <span class="badge text-bg-secondary">{{ quiz_session.mode|title }}</span>
+</div>
+<div class="progress mb-4"><div class="progress-bar" style="width: {{ ((number - 1) / total * 100) if total else 0 }}%"></div></div>
+<div class="stat-card">
+  <div class="display-5 mb-4">{{ vocab.source_word }}</div>
+  <form method="post">
+    <label class="form-label">English translation</label>
+    <input class="form-control form-control-lg mb-3" name="user_answer" autofocus autocomplete="off">
+    {% if quiz_session.mode == "practice" %}
+    <details class="mb-3">
+      <summary>Reveal answer</summary>
+      <div class="mt-2">{{ vocab.all_answers()|join(", ") }}</div>
+    </details>
+    {% endif %}
+    <div><button class="btn btn-primary">Submit</button></div>
+  </form>
+</div>
+{% endblock %}

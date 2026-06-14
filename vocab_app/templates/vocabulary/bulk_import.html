@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Bulk Import{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Bulk Import</h1>
+<form method="post" class="stat-card">
+  <label class="form-label">CSV lines</label>
+  <textarea class="form-control mb-3" name="bulk_text" rows="12" placeholder="source,primary translation,accepted answer;accepted answer,notes"></textarea>
+  <button class="btn btn-primary">Import</button>
+</form>
+{% endblock %}
+

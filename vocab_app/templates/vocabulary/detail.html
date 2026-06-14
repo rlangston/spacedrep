@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ vocab.source_word }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between gap-2 align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ vocab.source_word }}</h1>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.vocabulary') }}">Back to Vocabulary</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('main.edit_word', vocab_id=vocab.id) }}">Edit Word</a>
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="stat-card">
+      <h2 class="h5">Vocabulary</h2>
+      <p><strong>Primary translation:</strong> {{ vocab.primary_translation }}</p>
+      <p><strong>Accepted answers:</strong> {{ vocab.all_answers()|join(", ") }}</p>
+      <p class="mb-0"><strong>Notes:</strong> {{ vocab.notes or "" }}</p>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="stat-card">
+      <h2 class="h5">Learning Status</h2>
+      {% if user_word %}
+      <p><strong>Current state:</strong> {{ user_word.display_state }}{% if not user_word.active %} (inactive){% endif %}</p>
+      <p><strong>Review level:</strong> {{ user_word.review_level }}</p>
+      <p><strong>Next review:</strong> {{ user_word.next_review or "" }}</p>
+      <p><strong>Date added:</strong> {{ user_word.date_added_to_testing_set or "" }}</p>
+      <form method="post" action="{{ url_for('main.reset_word', vocab_id=vocab.id) }}" class="d-inline"><button class="btn btn-sm btn-outline-warning">Reset Progress</button></form>
+      <form method="post" action="{{ url_for('main.remove_word', vocab_id=vocab.id) }}" class="d-inline"><button class="btn btn-sm btn-outline-danger">Remove From Testing Set</button></form>
+      {% else %}
+      <p class="text-secondary mb-0">Not in the active testing set.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<h2 class="h5 mt-4">History</h2>
+<p>Success rate: {{ "%.0f"|format(success_rate) }}%</p>
+<div class="table-responsive bg-white border rounded">
+  <table class="table mb-0">
+    <thead><tr><th>Date</th><th>User answer</th><th>Matched</th><th>Score</th><th>Result</th></tr></thead>
+    <tbody>
+      {% for answer in answers %}
+      <tr><td>{{ answer.answered_at.strftime("%Y-%m-%d %H:%M") }}</td><td>{{ answer.user_answer }}</td><td>{{ answer.matched_answer }}</td><td>{{ "%.0f"|format(answer.similarity_score or 0) }}</td><td>{{ "Correct" if answer.correct else "Incorrect" }}</td></tr>
+      {% else %}
+      <tr><td colspan="5" class="text-secondary">No answers yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

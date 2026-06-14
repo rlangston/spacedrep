@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Dashboard</h1>
+</div>
+<div class="row g-3 mb-4">
+  {% for label, value in [
+    ("Total vocabulary", stats.total_vocab),
+    ("Active testing set", stats.active),
+    ("Learning words", stats.learning),
+    ("Review words", stats.review),
+    ("Due today", stats.due)
+  ] %}
+  <div class="col-6 col-lg">
+    <div class="stat-card">
+      <div class="text-secondary small">{{ label }}</div>
+      <div class="fs-3 fw-semibold">{{ value }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a class="btn btn-primary" href="{{ url_for('main.start_session', mode='test') }}">Start Test Session</a>
+  <a class="btn btn-outline-primary" href="{{ url_for('main.start_session', mode='practice') }}">Start Practice Session</a>
+  <a class="btn btn-outline-secondary" href="{{ url_for('main.advance') }}">Advance (+10 Words)</a>
+  <a class="btn btn-outline-secondary" href="{{ url_for('main.add_word') }}">Add Word</a>
+</div>
+<div class="row g-4">
+  <div class="col-lg-6">
+    <h2 class="h5">Recently Added</h2>
+    <div class="list-group">
+      {% for word in recent_words %}
+      <a class="list-group-item list-group-item-action" href="{{ url_for('main.word_detail', vocab_id=word.id) }}">{{ word.source_word }} <span class="text-secondary">- {{ word.primary_translation }}</span></a>
+      {% else %}
+      <div class="list-group-item text-secondary">No words yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <h2 class="h5">Recent Sessions</h2>
+    <div class="list-group">
+      {% for s in recent_sessions %}
+      <a class="list-group-item list-group-item-action" href="{{ url_for('main.session_detail', session_id=s.id) }}">{{ s.started_at.strftime("%Y-%m-%d %H:%M") }} · {{ s.mode|title }} · {{ "%.0f"|format(s.accuracy) }}%</a>
+      {% else %}
+      <div class="list-group-item text-secondary">No sessions yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
