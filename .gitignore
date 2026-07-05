@@ -1,2 +1,4 @@
 .venv/
+.agents/
 vocab_app/__pycache__/
+__pycache__/

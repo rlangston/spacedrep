@@ -11,7 +11,7 @@ login_manager = LoginManager()
 login_manager.login_view = "main.login"
 
 
-def create_app(config: dict | None = None) -> Flask:
+def vocab_app(config: dict | None = None) -> Flask:
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-change-me"),
