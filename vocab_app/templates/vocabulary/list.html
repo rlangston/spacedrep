@@ -21,7 +21,7 @@
 </form>
 <div class="table-responsive bg-white border rounded">
   <table class="table table-hover mb-0">
-    <thead><tr><th>Source word</th><th>Primary translation</th><th>Learning state</th><th>Review level</th><th>Next review</th><th>Added to testing</th></tr></thead>
+    <thead><tr><th>Source word</th><th>Primary translation</th><th>Learning state</th><th>Review level</th><th>Next review</th><th>Added to testing</th><th class="text-end">Actions</th></tr></thead>
     <tbody>
       {% for word in rows %}
       {% set uw = user_words.get(word.id) %}
@@ -32,12 +32,16 @@
         <td>{{ uw.review_level if uw else "" }}</td>
         <td>{{ uw.next_review or "" if uw else "" }}</td>
         <td>{{ uw.date_added_to_testing_set or "" if uw else "" }}</td>
+        <td class="text-end">
+          <form method="post" action="{{ url_for('main.delete_word', vocab_id=word.id) }}" onsubmit="return confirm('Delete ' + {{ word.source_word|tojson }} + ' and all related progress/history records?');">
+            <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+          </form>
+        </td>
       </tr>
       {% else %}
-      <tr><td colspan="6" class="text-secondary">No words found.</td></tr>
+      <tr><td colspan="7" class="text-secondary">No words found.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 {% endblock %}
-

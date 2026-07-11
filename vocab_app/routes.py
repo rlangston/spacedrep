@@ -173,6 +173,21 @@ def edit_word(vocab_id: int):
     return render_template("vocabulary/form.html", vocab=vocab)
 
 
+@bp.post("/vocabulary/<int:vocab_id>/delete")
+@login_required
+def delete_word(vocab_id: int):
+    vocab = Vocabulary.query.get_or_404(vocab_id)
+    source_word = vocab.source_word
+    deleted = delete_vocabulary_ids([vocab.id])
+    prune_deleted_vocabulary_from_session([vocab.id])
+    db.session.commit()
+    if deleted:
+        flash(f"Deleted {source_word} and related progress/history records.", "success")
+    else:
+        flash("That word was already deleted.", "info")
+    return redirect(url_for("main.vocabulary"))
+
+
 @bp.post("/vocabulary/<int:vocab_id>/reset")
 @login_required
 def reset_word(vocab_id: int):
@@ -492,6 +507,20 @@ def delete_vocabulary_ids(vocab_ids: list[int]) -> int:
     UserWord.query.filter(UserWord.vocabulary_id.in_(vocab_ids)).delete(synchronize_session=False)
     AcceptedAnswer.query.filter(AcceptedAnswer.vocabulary_id.in_(vocab_ids)).delete(synchronize_session=False)
     return Vocabulary.query.filter(Vocabulary.id.in_(vocab_ids)).delete(synchronize_session=False)
+
+
+def prune_deleted_vocabulary_from_session(vocab_ids: list[int]) -> None:
+    deleted_ids = set(vocab_ids)
+    changed = False
+    for key, value in list(session.items()):
+        if not key.startswith("quiz_") or not isinstance(value, list):
+            continue
+        pruned = [vocab_id for vocab_id in value if vocab_id not in deleted_ids]
+        if len(pruned) != len(value):
+            session[key] = pruned
+            changed = True
+    if changed:
+        session.modified = True
 
 
 def snapshot_user_word(user_word: UserWord) -> dict[str, str | int | bool | None]:
